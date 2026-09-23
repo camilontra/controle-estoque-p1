@@ -53,6 +53,11 @@ class MovimentacaoForm(forms.ModelForm):
         deposito = cleaned_data.get('deposito')
         tipo = cleaned_data.get('tipo')
         quantidade = cleaned_data.get('quantidade')
+        
+        if quantidade is not None and quantidade <= 0:
+           raise ValidationError(
+               'A quantidade deve ser maior que zero.'
+            )
 
         if (
             produto
