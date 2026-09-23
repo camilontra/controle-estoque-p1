@@ -7,6 +7,21 @@
   + Novo fornecedor
 </a>
 
+<form method="get" style="margin-bottom: 20px">
+  <input
+    type="text"
+    name="q"
+    placeholder="Buscar por nome ou e-mail"
+    value="{{ busca }}"
+  />
+
+  <button type="submit">Buscar</button>
+
+  {% if busca %}
+  <a href="{% url 'fornecedor_list' %}">Limpar</a>
+  {% endif %}
+</form>
+
 <table>
   <thead>
     <tr>

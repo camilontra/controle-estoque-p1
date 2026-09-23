@@ -148,12 +148,24 @@ def produto_delete(request, pk):
 # =========================================================
 
 def fornecedor_list(request):
-    fornecedores = Fornecedor.objects.all().order_by('nome')
+    busca = request.GET.get('q', '')
+
+    fornecedores = Fornecedor.objects.all()
+
+    if busca:
+        fornecedores = fornecedores.filter(
+            nome__icontains=busca
+        ) | fornecedores.filter(
+            email__icontains=busca
+        )
 
     return render(
         request,
         'estoque/fornecedor_list.html',
-        {'fornecedores': fornecedores}
+        {
+            'fornecedores': fornecedores,
+            'busca': busca
+        }
     )
 
 
