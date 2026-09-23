@@ -19,3 +19,11 @@ Sistema web desenvolvido em Django para controle de estoque.
 - SQLite
 - HTML
 - CSS
+
+## Como executar
+
+Clone o projeto e entre na pasta:
+
+```bash
+cd controle-estoque-p1
+```
