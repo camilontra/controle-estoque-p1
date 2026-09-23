@@ -1,0 +1,42 @@
+{% extends 'estoque/base.html' %} {% block title %} Início - Controle de Estoque
+{% endblock %} {% block content %}
+
+<h1>Controle de Estoque</h1>
+
+<p>Sistema de controle de produtos, fornecedores, depósitos e movimentações.</p>
+
+<div class="cards">
+  <div class="card">
+    <h2>Produtos</h2>
+
+    <div class="number">{{ total_produtos }}</div>
+
+    <a class="btn" href="{% url 'produto_list' %}"> Ver produtos </a>
+  </div>
+
+  <div class="card">
+    <h2>Fornecedores</h2>
+
+    <div class="number">{{ total_fornecedores }}</div>
+
+    <a class="btn" href="{% url 'fornecedor_list' %}"> Ver fornecedores </a>
+  </div>
+
+  <div class="card">
+    <h2>Depósitos</h2>
+
+    <div class="number">{{ total_depositos }}</div>
+
+    <a class="btn" href="{% url 'deposito_list' %}"> Ver depósitos </a>
+  </div>
+
+  <div class="card">
+    <h2>Movimentações</h2>
+
+    <div class="number">{{ total_movimentacoes }}</div>
+
+    <a class="btn" href="{% url 'movimentacao_list' %}"> Ver movimentações </a>
+  </div>
+</div>
+
+{% endblock %}

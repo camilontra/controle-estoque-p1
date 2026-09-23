@@ -1,0 +1,54 @@
+{% extends 'estoque/base.html' %} {% block title %} Fornecedores {% endblock %}
+{% block content %}
+
+<h1>Fornecedores</h1>
+
+<a class="btn btn-success" href="{% url 'fornecedor_create' %}">
+  + Novo fornecedor
+</a>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Telefone</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for fornecedor in fornecedores %}
+
+    <tr>
+      <td>{{ fornecedor.nome }}</td>
+
+      <td>{{ fornecedor.email|default:"-" }}</td>
+
+      <td>{{ fornecedor.telefone|default:"-" }}</td>
+
+      <td class="acoes">
+        <a class="btn" href="{% url 'fornecedor_update' fornecedor.pk %}">
+          Editar
+        </a>
+
+        <a
+          class="btn btn-danger"
+          href="{% url 'fornecedor_delete' fornecedor.pk %}"
+        >
+          Excluir
+        </a>
+      </td>
+    </tr>
+
+    {% empty %}
+
+    <tr>
+      <td colspan="4">Nenhum fornecedor cadastrado.</td>
+    </tr>
+
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

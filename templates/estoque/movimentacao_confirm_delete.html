@@ -1,0 +1,31 @@
+{% extends 'estoque/base.html' %} {% block title %} Excluir movimentação {%
+endblock %} {% block content %}
+
+<h1>Excluir movimentação</h1>
+
+<p>Tem certeza que deseja excluir esta movimentação?</p>
+
+<p>
+  <strong>Produto:</strong>
+  {{ movimentacao.produto.nome }}
+</p>
+
+<p>
+  <strong>Tipo:</strong>
+  {{ movimentacao.get_tipo_display }}
+</p>
+
+<p>
+  <strong>Quantidade:</strong>
+  {{ movimentacao.quantidade }}
+</p>
+
+<form method="post">
+  {% csrf_token %}
+
+  <button type="submit" class="btn btn-danger">Sim, excluir</button>
+
+  <a class="btn" href="{% url 'movimentacao_list' %}"> Cancelar </a>
+</form>
+
+{% endblock %}

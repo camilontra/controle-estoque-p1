@@ -1,0 +1,19 @@
+{% extends 'estoque/base.html' %} {% block title %} Excluir fornecedor {%
+endblock %} {% block content %}
+
+<h1>Excluir fornecedor</h1>
+
+<p>
+  Tem certeza que deseja excluir
+  <strong>{{ fornecedor.nome }}</strong>?
+</p>
+
+<form method="post">
+  {% csrf_token %}
+
+  <button type="submit" class="btn btn-danger">Sim, excluir</button>
+
+  <a class="btn" href="{% url 'fornecedor_list' %}"> Cancelar </a>
+</form>
+
+{% endblock %}
