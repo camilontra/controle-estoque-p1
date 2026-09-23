@@ -16,6 +16,21 @@
     </tr>
   </thead>
 
+  <form method="get" style="margin-bottom: 20px">
+    <input
+      type="text"
+      name="q"
+      placeholder="Buscar por nome ou código"
+      value="{{ busca }}"
+    />
+
+    <button type="submit">Buscar</button>
+
+    {% if busca %}
+    <a href="{% url 'produto_list' %}">Limpar</a>
+    {% endif %}
+  </form>
+
   <tbody>
     {% for produto in produtos %}
     <tr>

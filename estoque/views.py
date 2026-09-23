@@ -41,12 +41,24 @@ def home(request):
 # =========================================================
 
 def produto_list(request):
-    produtos = Produto.objects.all().order_by('nome')
+    busca = request.GET.get('q', '')
+
+    produtos = Produto.objects.all()
+
+    if busca:
+        produtos = produtos.filter(
+            nome__icontains=busca
+        ) | produtos.filter(
+            codigo__icontains=busca
+        )
 
     return render(
         request,
         'estoque/produto_list.html',
-        {'produtos': produtos}
+        {
+            'produtos': produtos,
+            'busca': busca
+        }
     )
 
 
