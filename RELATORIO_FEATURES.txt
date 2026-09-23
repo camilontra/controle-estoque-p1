@@ -1,0 +1,7 @@
+**Feature 1 — Filtro por fornecedor**
+
+A busca por texto já estava implementada no sistema, e foi adicionada uma opção de filtro por fornecedor. A escolha do fornecedor permite identificar e localizar com mais facilidade quais produtos estão associados a cada fornecedor, podendo o filtro ser utilizado sozinho ou em conjunto com a busca textual. Essa funcionalidade facilita a organização e a consulta dos produtos cadastrados.
+
+**Feature 2 — Validação das movimentações de saída**
+
+Foi implementada uma regra de negócio que impede o registro de uma saída de produtos em quantidade superior ao estoque disponível, evitando inconsistências na administração do estoque causadas, inclusive, por possíveis erros de digitação. Também foi adicionada a validação que impede o registro de movimentações com quantidade igual ou inferior a zero, evitando lançamentos desnecessários ou inválidos.
