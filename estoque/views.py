@@ -20,7 +20,7 @@ from .models import (
     Movimentacao
 )
 
-
+ 
 def home(request):
     contexto = {
         'total_produtos': Produto.objects.count(),
@@ -42,6 +42,7 @@ def home(request):
 
 def produto_list(request):
     busca = request.GET.get('q', '')
+    fornecedor_id = request.GET.get('fornecedor', '')
 
     produtos = Produto.objects.all()
 
@@ -52,12 +53,21 @@ def produto_list(request):
             codigo__icontains=busca
         )
 
+    if fornecedor_id:
+        produtos = produtos.filter(
+            fornecedor_id=fornecedor_id
+        )
+
+    fornecedores = Fornecedor.objects.all().order_by('nome')
+
     return render(
         request,
         'estoque/produto_list.html',
         {
             'produtos': produtos,
-            'busca': busca
+            'busca': busca,
+            'fornecedores': fornecedores,
+            'fornecedor_id': fornecedor_id
         }
     )
 
