@@ -469,12 +469,15 @@ def movimentacao_delete(request, pk):
 # =========================================================
 
 def estoque(request):
+
     produtos = Produto.objects.all().order_by('nome')
+
     depositos = Deposito.objects.all().order_by('nome')
 
     saldos = []
 
     for produto in produtos:
+
         for deposito in depositos:
 
             entradas = (
@@ -516,10 +519,26 @@ def estoque(request):
                 )
             })
 
+    total_produtos = Produto.objects.count()
+
+    total_unidades = sum(
+        item['saldo']
+        for item in saldos
+    )
+
+    total_estoque_baixo = sum(
+        1
+        for item in saldos
+        if item['baixo_estoque']
+    )
+
     return render(
         request,
         'estoque/estoque.html',
         {
-            'saldos': saldos
+            'estoques': saldos,
+            'total_produtos': total_produtos,
+            'total_unidades': total_unidades,
+            'total_estoque_baixo': total_estoque_baixo
         }
     )
