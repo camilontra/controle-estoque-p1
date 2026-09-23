@@ -4,6 +4,21 @@
 
 <a href="{% url 'deposito_create' %}" class="btn"> Novo depósito </a>
 
+<form method="get" style="margin-bottom: 20px">
+  <input
+    type="text"
+    name="q"
+    placeholder="Buscar por nome ou localização"
+    value="{{ busca }}"
+  />
+
+  <button type="submit">Buscar</button>
+
+  {% if busca %}
+  <a href="{% url 'deposito_list' %}">Limpar</a>
+  {% endif %}
+</form>
+
 <table>
   <thead>
     <tr>

@@ -255,12 +255,24 @@ def fornecedor_delete(request, pk):
 # =========================================================
 
 def deposito_list(request):
-    depositos = Deposito.objects.all().order_by('nome')
+    busca = request.GET.get('q', '')
+
+    depositos = Deposito.objects.all()
+
+    if busca:
+        depositos = depositos.filter(
+            nome__icontains=busca
+        ) | depositos.filter(
+            localizacao__icontains=busca
+        )
 
     return render(
         request,
         'estoque/deposito_list.html',
-        {'depositos': depositos}
+        {
+            'depositos': depositos,
+            'busca': busca
+        }
     )
 
 
