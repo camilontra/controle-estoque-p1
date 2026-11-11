@@ -1,3 +1,9 @@
 from django.db import models
 
-# Create your models here.
+
+class Organizacao(models.Model):
+    nome = models.CharField(max_length=120)
+    criada_em = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.nome
