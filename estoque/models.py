@@ -1,5 +1,4 @@
 from django.db import models
-
 from core.models import DaOrganizacao
 
 
@@ -21,14 +20,14 @@ class Produto(DaOrganizacao):
         Fornecedor,
         on_delete=models.SET_NULL,
         null=True,
-        blank=True
+        blank=True,
     )
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['organizacao', 'codigo'],
-                name='codigo_unico_por_org'
+                fields=["organizacao", "codigo"],
+                name="codigo_unico_por_org",
             ),
         ]
 
@@ -45,25 +44,24 @@ class Deposito(DaOrganizacao):
 
 
 class Movimentacao(DaOrganizacao):
-
     TIPO_CHOICES = [
-        ('ENTRADA', 'Entrada'),
-        ('SAIDA', 'Saída'),
+        ("ENTRADA", "Entrada"),
+        ("SAIDA", "Saída"),
     ]
 
     produto = models.ForeignKey(
         Produto,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
 
     deposito = models.ForeignKey(
         Deposito,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
     )
 
     tipo = models.CharField(
         max_length=10,
-        choices=TIPO_CHOICES
+        choices=TIPO_CHOICES,
     )
 
     quantidade = models.PositiveIntegerField()
@@ -74,7 +72,7 @@ class Movimentacao(DaOrganizacao):
         Fornecedor,
         on_delete=models.SET_NULL,
         null=True,
-        blank=True
+        blank=True,
     )
 
     def __str__(self):

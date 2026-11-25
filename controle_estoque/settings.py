@@ -40,8 +40,7 @@ INSTALLED_APPS = [
 
     'core',
     'estoque',
-    'rest_framework'
-    'organizacoes',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
