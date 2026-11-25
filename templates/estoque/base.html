@@ -35,6 +35,13 @@
         text-decoration: underline;
       }
 
+      nav form {
+        display: inline;
+        background: none;
+        padding: 0;
+        box-shadow: none;
+      }
+
       .container {
         max-width: 1100px;
         margin: 30px auto;
@@ -153,6 +160,7 @@
     <nav>
       <a href="{% url 'home' %}"> Controle de Estoque </a>
 
+      {% if user.is_authenticated %}
       <a href="{% url 'produto_list' %}"> Produtos </a>
 
       <a href="{% url 'fornecedor_list' %}"> Fornecedores </a>
@@ -164,6 +172,12 @@
       <a href="{% url 'estoque' %}"> Estoque </a>
 
       <a href="/admin/"> Admin </a>
+
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Sair</button>
+      </form>
+      {% endif %}
     </nav>
 
     <div class="container">
