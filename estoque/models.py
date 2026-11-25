@@ -1,7 +1,9 @@
 from django.db import models
 
+from core.models import DaOrganizacao
 
-class Fornecedor(models.Model):
+
+class Fornecedor(DaOrganizacao):
     nome = models.CharField(max_length=100)
     email = models.EmailField(blank=True)
     telefone = models.CharField(max_length=20, blank=True)
@@ -10,7 +12,7 @@ class Fornecedor(models.Model):
         return self.nome
 
 
-class Produto(models.Model):
+class Produto(DaOrganizacao):
     nome = models.CharField(max_length=100)
     codigo = models.CharField(max_length=50, unique=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
@@ -26,7 +28,7 @@ class Produto(models.Model):
         return f"{self.codigo} - {self.nome}"
 
 
-class Deposito(models.Model):
+class Deposito(DaOrganizacao):
     nome = models.CharField(max_length=100)
     localizacao = models.CharField(max_length=150)
 
@@ -34,7 +36,7 @@ class Deposito(models.Model):
         return self.nome
 
 
-class Movimentacao(models.Model):
+class Movimentacao(DaOrganizacao):
 
     TIPO_CHOICES = [
         ('ENTRADA', 'Entrada'),
