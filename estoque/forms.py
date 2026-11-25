@@ -27,6 +27,15 @@ class ProdutoForm(forms.ModelForm):
             'fornecedor'
         ]
 
+    def __init__(self, *args, org=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.org = org
+
+        self.fields['fornecedor'].queryset = (
+            Fornecedor.objects.filter(organizacao=org)
+        )
+
 
 class DepositoForm(forms.ModelForm):
     class Meta:
@@ -45,6 +54,23 @@ class MovimentacaoForm(forms.ModelForm):
             'quantidade',
             'fornecedor'
         ]
+
+    def __init__(self, *args, org=None, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.org = org
+
+        self.fields['produto'].queryset = (
+            Produto.objects.filter(organizacao=org)
+        )
+
+        self.fields['deposito'].queryset = (
+            Deposito.objects.filter(organizacao=org)
+        )
+
+        self.fields['fornecedor'].queryset = (
+            Fornecedor.objects.filter(organizacao=org)
+        )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -68,6 +94,7 @@ class MovimentacaoForm(forms.ModelForm):
             entradas = (
                 Movimentacao.objects
                 .filter(
+                    organizacao=self.org,
                     produto=produto,
                     deposito=deposito,
                     tipo='ENTRADA'
@@ -79,6 +106,7 @@ class MovimentacaoForm(forms.ModelForm):
             saidas = (
                 Movimentacao.objects
                 .filter(
+                    organizacao=self.org,
                     produto=produto,
                     deposito=deposito,
                     tipo='SAIDA'

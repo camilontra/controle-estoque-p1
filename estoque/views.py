@@ -98,7 +98,7 @@ def produto_create(request):
     org = org_atual(request)
 
     if request.method == 'POST':
-        form = ProdutoForm(request.POST)
+        form = ProdutoForm(request.POST, org=org)
 
         if form.is_valid():
             produto = form.save(commit=False)
@@ -111,7 +111,7 @@ def produto_create(request):
             return redirect('produto_list')
 
     else:
-        form = ProdutoForm()
+        form = ProdutoForm(org=org)
 
     return render(
         request,
@@ -134,7 +134,8 @@ def produto_update(request, pk):
     if request.method == 'POST':
         form = ProdutoForm(
             request.POST,
-            instance=produto
+            instance=produto,
+            org=org_atual(request)
         )
 
         if form.is_valid():
@@ -147,7 +148,8 @@ def produto_update(request, pk):
 
     else:
         form = ProdutoForm(
-            instance=produto
+            instance=produto,
+            org=org_atual(request)
         )
 
     return render(
@@ -454,7 +456,7 @@ def movimentacao_create(request):
     org = org_atual(request)
 
     if request.method == 'POST':
-        form = MovimentacaoForm(request.POST)
+        form = MovimentacaoForm(request.POST, org=org)
 
         if form.is_valid():
             movimentacao = form.save(commit=False)
@@ -467,7 +469,7 @@ def movimentacao_create(request):
             return redirect('movimentacao_list')
 
     else:
-        form = MovimentacaoForm()
+        form = MovimentacaoForm(org=org)
 
     return render(
         request,
@@ -490,7 +492,8 @@ def movimentacao_update(request, pk):
     if request.method == 'POST':
         form = MovimentacaoForm(
             request.POST,
-            instance=movimentacao
+            instance=movimentacao,
+            org=org_atual(request)
         )
 
         if form.is_valid():
@@ -503,7 +506,8 @@ def movimentacao_update(request, pk):
 
     else:
         form = MovimentacaoForm(
-            instance=movimentacao
+            instance=movimentacao,
+            org=org_atual(request)
         )
 
     return render(
