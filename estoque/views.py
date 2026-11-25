@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.shortcuts import (
     get_object_or_404,
@@ -20,7 +21,12 @@ from .models import (
     Movimentacao
 )
 
- 
+
+def org_atual(request):
+    return request.user.perfil.organizacao
+
+
+@login_required
 def home(request):
     contexto = {
         'total_produtos': Produto.objects.count(),
@@ -40,6 +46,7 @@ def home(request):
 # PRODUTOS
 # =========================================================
 
+@login_required
 def produto_list(request):
     busca = request.GET.get('q', '')
     fornecedor_id = request.GET.get('fornecedor', '')
@@ -72,6 +79,7 @@ def produto_list(request):
     )
 
 
+@login_required
 def produto_create(request):
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
@@ -97,6 +105,7 @@ def produto_create(request):
     )
 
 
+@login_required
 def produto_update(request, pk):
     produto = get_object_or_404(
         Produto,
@@ -132,6 +141,7 @@ def produto_update(request, pk):
     )
 
 
+@login_required
 def produto_delete(request, pk):
     produto = get_object_or_404(
         Produto,
@@ -157,6 +167,7 @@ def produto_delete(request, pk):
 # FORNECEDORES
 # =========================================================
 
+@login_required
 def fornecedor_list(request):
     busca = request.GET.get('q', '')
 
@@ -179,6 +190,7 @@ def fornecedor_list(request):
     )
 
 
+@login_required
 def fornecedor_create(request):
     if request.method == 'POST':
         form = FornecedorForm(request.POST)
@@ -204,6 +216,7 @@ def fornecedor_create(request):
     )
 
 
+@login_required
 def fornecedor_update(request, pk):
     fornecedor = get_object_or_404(
         Fornecedor,
@@ -239,6 +252,7 @@ def fornecedor_update(request, pk):
     )
 
 
+@login_required
 def fornecedor_delete(request, pk):
     fornecedor = get_object_or_404(
         Fornecedor,
@@ -264,6 +278,7 @@ def fornecedor_delete(request, pk):
 # DEPÓSITOS
 # =========================================================
 
+@login_required
 def deposito_list(request):
     busca = request.GET.get('q', '')
 
@@ -286,6 +301,7 @@ def deposito_list(request):
     )
 
 
+@login_required
 def deposito_create(request):
     if request.method == 'POST':
         form = DepositoForm(request.POST)
@@ -311,6 +327,7 @@ def deposito_create(request):
     )
 
 
+@login_required
 def deposito_update(request, pk):
     deposito = get_object_or_404(
         Deposito,
@@ -346,6 +363,7 @@ def deposito_update(request, pk):
     )
 
 
+@login_required
 def deposito_delete(request, pk):
     deposito = get_object_or_404(
         Deposito,
@@ -371,6 +389,7 @@ def deposito_delete(request, pk):
 # MOVIMENTAÇÕES
 # =========================================================
 
+@login_required
 def movimentacao_list(request):
     movimentacoes = (
         Movimentacao.objects
@@ -391,6 +410,7 @@ def movimentacao_list(request):
     )
 
 
+@login_required
 def movimentacao_create(request):
     if request.method == 'POST':
         form = MovimentacaoForm(request.POST)
@@ -416,6 +436,7 @@ def movimentacao_create(request):
     )
 
 
+@login_required
 def movimentacao_update(request, pk):
     movimentacao = get_object_or_404(
         Movimentacao,
@@ -451,6 +472,7 @@ def movimentacao_update(request, pk):
     )
 
 
+@login_required
 def movimentacao_delete(request, pk):
     movimentacao = get_object_or_404(
         Movimentacao,
@@ -478,6 +500,7 @@ def movimentacao_delete(request, pk):
 # ESTOQUE
 # =========================================================
 
+@login_required
 def estoque(request):
 
     produtos = Produto.objects.all().order_by('nome')
