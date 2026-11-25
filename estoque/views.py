@@ -95,11 +95,15 @@ def produto_list(request):
 
 @login_required
 def produto_create(request):
+    org = org_atual(request)
+
     if request.method == 'POST':
         form = ProdutoForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            produto = form.save(commit=False)
+            produto.organizacao = org
+            produto.save()
             messages.success(
                 request,
                 'Produto cadastrado com sucesso!'
@@ -208,11 +212,15 @@ def fornecedor_list(request):
 
 @login_required
 def fornecedor_create(request):
+    org = org_atual(request)
+
     if request.method == 'POST':
         form = FornecedorForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            fornecedor = form.save(commit=False)
+            fornecedor.organizacao = org
+            fornecedor.save()
             messages.success(
                 request,
                 'Fornecedor cadastrado com sucesso!'
@@ -321,11 +329,15 @@ def deposito_list(request):
 
 @login_required
 def deposito_create(request):
+    org = org_atual(request)
+
     if request.method == 'POST':
         form = DepositoForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            deposito = form.save(commit=False)
+            deposito.organizacao = org
+            deposito.save()
             messages.success(
                 request,
                 'Depósito cadastrado com sucesso!'
@@ -433,11 +445,15 @@ def movimentacao_list(request):
 
 @login_required
 def movimentacao_create(request):
+    org = org_atual(request)
+
     if request.method == 'POST':
         form = MovimentacaoForm(request.POST)
 
         if form.is_valid():
-            form.save()
+            movimentacao = form.save(commit=False)
+            movimentacao.organizacao = org
+            movimentacao.save()
             messages.success(
                 request,
                 'Movimentação registrada com sucesso!'
