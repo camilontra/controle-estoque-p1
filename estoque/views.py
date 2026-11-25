@@ -127,7 +127,8 @@ def produto_create(request):
 def produto_update(request, pk):
     produto = get_object_or_404(
         Produto,
-        pk=pk
+        pk=pk,
+        organizacao=org_atual(request)
     )
 
     if request.method == 'POST':
@@ -163,7 +164,8 @@ def produto_update(request, pk):
 def produto_delete(request, pk):
     produto = get_object_or_404(
         Produto,
-        pk=pk
+        pk=pk,
+        organizacao=org_atual(request)
     )
 
     if request.method == 'POST':
@@ -244,7 +246,8 @@ def fornecedor_create(request):
 def fornecedor_update(request, pk):
     fornecedor = get_object_or_404(
         Fornecedor,
-        pk=pk
+        pk=pk,
+        organizacao=org_atual(request)
     )
 
     if request.method == 'POST':
@@ -280,7 +283,8 @@ def fornecedor_update(request, pk):
 def fornecedor_delete(request, pk):
     fornecedor = get_object_or_404(
         Fornecedor,
-        pk=pk
+        pk=pk,
+        organizacao=org_atual(request)
     )
 
     if request.method == 'POST':
@@ -361,7 +365,8 @@ def deposito_create(request):
 def deposito_update(request, pk):
     deposito = get_object_or_404(
         Deposito,
-        pk=pk
+        pk=pk,
+        organizacao=org_atual(request)
     )
 
     if request.method == 'POST':
@@ -397,7 +402,8 @@ def deposito_update(request, pk):
 def deposito_delete(request, pk):
     deposito = get_object_or_404(
         Deposito,
-        pk=pk
+        pk=pk,
+        organizacao=org_atual(request)
     )
 
     if request.method == 'POST':
@@ -477,7 +483,8 @@ def movimentacao_create(request):
 def movimentacao_update(request, pk):
     movimentacao = get_object_or_404(
         Movimentacao,
-        pk=pk
+        pk=pk,
+        organizacao=org_atual(request)
     )
 
     if request.method == 'POST':
@@ -513,7 +520,8 @@ def movimentacao_update(request, pk):
 def movimentacao_delete(request, pk):
     movimentacao = get_object_or_404(
         Movimentacao,
-        pk=pk
+        pk=pk,
+        organizacao=org_atual(request)
     )
 
     if request.method == 'POST':
