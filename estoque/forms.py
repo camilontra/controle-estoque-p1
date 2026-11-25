@@ -36,6 +36,31 @@ class ProdutoForm(forms.ModelForm):
             Fornecedor.objects.filter(organizacao=org)
         )
 
+    def clean(self):
+        cleaned_data = super().clean()
+
+        codigo = cleaned_data.get('codigo')
+
+        if codigo:
+            duplicado = (
+                Produto.objects
+                .filter(
+                    organizacao=self.org,
+                    codigo=codigo
+                )
+                .exclude(pk=self.instance.pk)
+                .exists()
+            )
+
+            if duplicado:
+                self.add_error(
+                    'codigo',
+                    'Já existe um produto com este código '
+                    'na sua organização.'
+                )
+
+        return cleaned_data
+
 
 class DepositoForm(forms.ModelForm):
     class Meta:
