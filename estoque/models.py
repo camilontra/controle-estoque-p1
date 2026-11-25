@@ -14,7 +14,7 @@ class Fornecedor(DaOrganizacao):
 
 class Produto(DaOrganizacao):
     nome = models.CharField(max_length=100)
-    codigo = models.CharField(max_length=50, unique=True)
+    codigo = models.CharField(max_length=50)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     estoque_minimo = models.PositiveIntegerField(default=0)
     fornecedor = models.ForeignKey(
@@ -23,6 +23,14 @@ class Produto(DaOrganizacao):
         null=True,
         blank=True
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['organizacao', 'codigo'],
+                name='codigo_unico_por_org'
+            ),
+        ]
 
     def __str__(self):
         return f"{self.codigo} - {self.nome}"
