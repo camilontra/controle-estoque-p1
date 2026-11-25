@@ -58,10 +58,12 @@ def home(request):
 
 @login_required
 def produto_list(request):
+    org = org_atual(request)
+
     busca = request.GET.get('q', '')
     fornecedor_id = request.GET.get('fornecedor', '')
 
-    produtos = Produto.objects.all()
+    produtos = Produto.objects.filter(organizacao=org)
 
     if busca:
         produtos = produtos.filter(
@@ -75,7 +77,9 @@ def produto_list(request):
             fornecedor_id=fornecedor_id
         )
 
-    fornecedores = Fornecedor.objects.all().order_by('nome')
+    fornecedores = Fornecedor.objects.filter(
+        organizacao=org
+    ).order_by('nome')
 
     return render(
         request,
@@ -179,9 +183,11 @@ def produto_delete(request, pk):
 
 @login_required
 def fornecedor_list(request):
+    org = org_atual(request)
+
     busca = request.GET.get('q', '')
 
-    fornecedores = Fornecedor.objects.all()
+    fornecedores = Fornecedor.objects.filter(organizacao=org)
 
     if busca:
         fornecedores = fornecedores.filter(
@@ -290,9 +296,11 @@ def fornecedor_delete(request, pk):
 
 @login_required
 def deposito_list(request):
+    org = org_atual(request)
+
     busca = request.GET.get('q', '')
 
-    depositos = Deposito.objects.all()
+    depositos = Deposito.objects.filter(organizacao=org)
 
     if busca:
         depositos = depositos.filter(
@@ -401,8 +409,11 @@ def deposito_delete(request, pk):
 
 @login_required
 def movimentacao_list(request):
+    org = org_atual(request)
+
     movimentacoes = (
         Movimentacao.objects
+        .filter(organizacao=org)
         .select_related(
             'produto',
             'deposito',
