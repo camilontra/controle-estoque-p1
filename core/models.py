@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -21,3 +22,17 @@ class DaOrganizacao(models.Model):
 
     class Meta:
         abstract = True
+
+
+class Perfil(models.Model):
+    usuario = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE
+    )
+    organizacao = models.ForeignKey(
+        Organizacao,
+        on_delete=models.PROTECT
+    )
+
+    def __str__(self):
+        return f'{self.usuario.username} - {self.organizacao}'

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Organizacao
+from .models import Organizacao, Perfil
 
 
 @admin.register(Organizacao)
@@ -12,4 +12,16 @@ class OrganizacaoAdmin(admin.ModelAdmin):
 
     search_fields = [
         'nome'
+    ]
+
+
+@admin.register(Perfil)
+class PerfilAdmin(admin.ModelAdmin):
+    list_display = [
+        'usuario',
+        'organizacao'
+    ]
+
+    list_filter = [
+        'organizacao'
     ]
