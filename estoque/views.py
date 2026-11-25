@@ -28,11 +28,21 @@ def org_atual(request):
 
 @login_required
 def home(request):
+    org = org_atual(request)
+
     contexto = {
-        'total_produtos': Produto.objects.count(),
-        'total_fornecedores': Fornecedor.objects.count(),
-        'total_depositos': Deposito.objects.count(),
-        'total_movimentacoes': Movimentacao.objects.count(),
+        'total_produtos': Produto.objects.filter(
+            organizacao=org
+        ).count(),
+        'total_fornecedores': Fornecedor.objects.filter(
+            organizacao=org
+        ).count(),
+        'total_depositos': Deposito.objects.filter(
+            organizacao=org
+        ).count(),
+        'total_movimentacoes': Movimentacao.objects.filter(
+            organizacao=org
+        ).count(),
     }
 
     return render(
@@ -503,9 +513,15 @@ def movimentacao_delete(request, pk):
 @login_required
 def estoque(request):
 
-    produtos = Produto.objects.all().order_by('nome')
+    org = org_atual(request)
 
-    depositos = Deposito.objects.all().order_by('nome')
+    produtos = Produto.objects.filter(
+        organizacao=org
+    ).order_by('nome')
+
+    depositos = Deposito.objects.filter(
+        organizacao=org
+    ).order_by('nome')
 
     saldos = []
 
@@ -516,6 +532,7 @@ def estoque(request):
             entradas = (
                 Movimentacao.objects
                 .filter(
+                    organizacao=org,
                     produto=produto,
                     deposito=deposito,
                     tipo='ENTRADA'
@@ -529,6 +546,7 @@ def estoque(request):
             saidas = (
                 Movimentacao.objects
                 .filter(
+                    organizacao=org,
                     produto=produto,
                     deposito=deposito,
                     tipo='SAIDA'
@@ -552,7 +570,7 @@ def estoque(request):
                 )
             })
 
-    total_produtos = Produto.objects.count()
+    total_produtos = produtos.count()
 
     total_unidades = sum(
         item['saldo']
