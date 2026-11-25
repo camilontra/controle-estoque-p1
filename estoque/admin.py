@@ -13,12 +13,17 @@ class FornecedorAdmin(admin.ModelAdmin):
     list_display = [
         'nome',
         'email',
-        'telefone'
+        'telefone',
+        'organizacao'
     ]
 
     search_fields = [
         'nome',
         'email'
+    ]
+
+    list_filter = [
+        'organizacao'
     ]
 
 
@@ -29,7 +34,8 @@ class ProdutoAdmin(admin.ModelAdmin):
         'nome',
         'preco',
         'estoque_minimo',
-        'fornecedor'
+        'fornecedor',
+        'organizacao'
     ]
 
     search_fields = [
@@ -38,6 +44,7 @@ class ProdutoAdmin(admin.ModelAdmin):
     ]
 
     list_filter = [
+        'organizacao',
         'fornecedor'
     ]
 
@@ -46,12 +53,17 @@ class ProdutoAdmin(admin.ModelAdmin):
 class DepositoAdmin(admin.ModelAdmin):
     list_display = [
         'nome',
-        'localizacao'
+        'localizacao',
+        'organizacao'
     ]
 
     search_fields = [
         'nome',
         'localizacao'
+    ]
+
+    list_filter = [
+        'organizacao'
     ]
 
 
@@ -63,10 +75,12 @@ class MovimentacaoAdmin(admin.ModelAdmin):
         'tipo',
         'quantidade',
         'data',
-        'fornecedor'
+        'fornecedor',
+        'organizacao'
     ]
 
     list_filter = [
+        'organizacao',
         'tipo',
         'deposito',
         'data'
