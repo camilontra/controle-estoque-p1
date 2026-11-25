@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.db.models import Sum
 from django.shortcuts import (
     get_object_or_404,
@@ -23,7 +24,12 @@ from .models import (
 
 
 def org_atual(request):
-    return request.user.perfil.organizacao
+    try:
+        return request.user.perfil.organizacao
+    except ObjectDoesNotExist:
+        raise PermissionDenied(
+            'Seu usuário não está vinculado a nenhuma organização.'
+        )
 
 
 @login_required

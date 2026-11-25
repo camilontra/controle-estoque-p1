@@ -412,3 +412,18 @@ class IsolamentoOrganizacaoTestCase(TestCase):
 
         self.produto_a.refresh_from_db()
         self.assertEqual(self.produto_a.nome, 'Produto da A renomeado')
+
+
+class UsuarioSemPerfilTestCase(TestCase):
+
+    def test_usuario_sem_perfil_recebe_403_em_vez_de_erro(self):
+        usuario = User.objects.create_superuser(
+            username='admin_sem_perfil',
+            password='senha-teste-123'
+        )
+
+        self.client.force_login(usuario)
+
+        response = self.client.get(reverse('produto_list'))
+
+        self.assertEqual(response.status_code, 403)
