@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard - Controle de Estoque</title>
+  </head>
+  <body>
+    <h1>Dashboard de Movimentações</h1>
+
+    <p>
+      <a href="{% url 'home' %}">Início</a> |
+      <a href="{% url 'estoque' %}">Estoque</a> |
+      <a href="{% url 'produto_list' %}">Produtos</a> |
+      <a href="{% url 'movimentacao_list' %}">Movimentações</a>
+    </p>
+
+    <form method="get">
+      {{ form.as_p }}
+      <button type="submit">Filtrar período</button>
+      <a href="{% url 'dashboard' %}">Limpar</a>
+    </form>
+
+    <h2>Indicadores (KPIs)</h2>
+    <ul>
+      <li>
+        <strong>Total de movimentações:</strong> {{
+        kpis.total_movimentacoes|default:0 }}
+      </li>
+      <li>
+        <strong>Volume total movimentado:</strong> {{
+        kpis.volume_total|default:0 }}
+      </li>
+    </ul>
+
+    <h2>Movimentações por mês</h2>
+    {% if por_mes %}
+    <table border="1" cellpadding="6">
+      <thead>
+        <tr>
+          <th>Mês</th>
+          <th>Total de movimentações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in por_mes %}
+        <tr>
+          <td>{{ item.mes }}</td>
+          <td>{{ item.total }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>Nenhuma movimentação encontrada no período.</p>
+    {% endif %}
+
+    <h2>Top 5 produtos por movimentações</h2>
+    {% if ranking_produtos %}
+    <ol>
+      {% for item in ranking_produtos %}
+      <li>{{ item.produto__nome }} — {{ item.total }} movimentações</li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <p>Sem dados de produtos no período.</p>
+    {% endif %}
+  </body>
+</html>

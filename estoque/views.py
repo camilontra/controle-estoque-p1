@@ -1,7 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
-from django.db.models import Sum
+from django.db.models import Case, Count, IntegerField, Q, Sum, When
+from django.db.models.functions import TruncMonth
 from django.shortcuts import (
     get_object_or_404,
     redirect,
@@ -12,9 +13,10 @@ from .forms import (
     FornecedorForm,
     ProdutoForm,
     DepositoForm,
-    MovimentacaoForm
+    MovimentacaoForm,
+    PeriodoForm,
+    filtrar_periodo,
 )
-
 from .models import (
     Fornecedor,
     Produto,
@@ -69,13 +71,15 @@ def produto_list(request):
     busca = request.GET.get('q', '')
     fornecedor_id = request.GET.get('fornecedor', '')
 
-    produtos = Produto.objects.filter(organizacao=org)
+    produtos = (
+        Produto.objects
+        .filter(organizacao=org)
+        .select_related('fornecedor')
+    )
 
     if busca:
         produtos = produtos.filter(
-            nome__icontains=busca
-        ) | produtos.filter(
-            codigo__icontains=busca
+            Q(nome__icontains=busca) | Q(codigo__icontains=busca)
         )
 
     if fornecedor_id:
@@ -97,7 +101,6 @@ def produto_list(request):
             'fornecedor_id': fornecedor_id
         }
     )
-
 
 @login_required
 def produto_create(request):
@@ -557,76 +560,69 @@ def movimentacao_delete(request, pk):
 
 @login_required
 def estoque(request):
-
     org = org_atual(request)
 
-    produtos = Produto.objects.filter(
-        organizacao=org
-    ).order_by('nome')
+    produtos = list(
+        Produto.objects
+        .filter(organizacao=org)
+        .select_related('fornecedor')
+        .order_by('nome')
+    )
+    depositos = list(
+        Deposito.objects
+        .filter(organizacao=org)
+        .order_by('nome')
+    )
 
-    depositos = Deposito.objects.filter(
-        organizacao=org
-    ).order_by('nome')
+    totais_qs = (
+        Movimentacao.objects
+        .filter(organizacao=org)
+        .values('produto_id', 'deposito_id')
+        .annotate(
+            entradas=Sum(
+                Case(
+                    When(tipo='ENTRADA', then='quantidade'),
+                    default=0,
+                    output_field=IntegerField(),
+                )
+            ),
+            saidas=Sum(
+                Case(
+                    When(tipo='SAIDA', then='quantidade'),
+                    default=0,
+                    output_field=IntegerField(),
+                )
+            ),
+        )
+    )
+
+    mapa_totais = {
+        (row['produto_id'], row['deposito_id']): (
+            row['entradas'] or 0,
+            row['saidas'] or 0,
+        )
+        for row in totais_qs
+    }
 
     saldos = []
-
     for produto in produtos:
-
         for deposito in depositos:
-
-            entradas = (
-                Movimentacao.objects
-                .filter(
-                    organizacao=org,
-                    produto=produto,
-                    deposito=deposito,
-                    tipo='ENTRADA'
-                )
-                .aggregate(
-                    total=Sum('quantidade')
-                )['total']
-                or 0
+            entradas, saidas = mapa_totais.get(
+                (produto.id, deposito.id), (0, 0)
             )
-
-            saidas = (
-                Movimentacao.objects
-                .filter(
-                    organizacao=org,
-                    produto=produto,
-                    deposito=deposito,
-                    tipo='SAIDA'
-                )
-                .aggregate(
-                    total=Sum('quantidade')
-                )['total']
-                or 0
-            )
-
             saldo = entradas - saidas
-
             saldos.append({
                 'produto': produto,
                 'deposito': deposito,
                 'entradas': entradas,
                 'saidas': saidas,
                 'saldo': saldo,
-                'baixo_estoque': (
-                    saldo <= produto.estoque_minimo
-                )
+                'baixo_estoque': saldo <= produto.estoque_minimo,
             })
 
-    total_produtos = produtos.count()
-
-    total_unidades = sum(
-        item['saldo']
-        for item in saldos
-    )
-
-    total_estoque_baixo = sum(
-        1
-        for item in saldos
-        if item['baixo_estoque']
-    )
+    total_produtos = len(produtos)
+    total_unidades = sum(item['saldo'] for item in saldos)
+    total_estoque_baixo = sum(1 for item in saldos if item['baixo_estoque'])
 
     return render(
         request,
@@ -635,6 +631,58 @@ def estoque(request):
             'estoques': saldos,
             'total_produtos': total_produtos,
             'total_unidades': total_unidades,
-            'total_estoque_baixo': total_estoque_baixo
+            'total_estoque_baixo': total_estoque_baixo,
+        },
+    )
+
+
+@login_required
+def dashboard(request):
+    org = org_atual(request)
+
+    movimentacoes_qs = filtrar_periodo(
+        request,
+        Movimentacao.objects
+        .filter(organizacao=org)
+        .select_related('produto', 'deposito', 'fornecedor'),
+        campo_data='data',
+    )
+
+    kpis = movimentacoes_qs.aggregate(
+        total_movimentacoes=Count('id'),
+        volume_total=Sum('quantidade'),
+    )
+
+    por_mes_qs = (
+        movimentacoes_qs
+        .annotate(mes=TruncMonth('data'))
+        .values('mes')
+        .annotate(total=Count('id'))
+        .order_by('mes')
+    )
+    por_mes = [
+        {
+            'mes': item['mes'].strftime('%m/%Y'),
+            'total': item['total'],
         }
+        for item in por_mes_qs
+        if item['mes'] is not None
+    ]
+
+    ranking_produtos = list(
+        movimentacoes_qs
+        .values('produto__nome')
+        .annotate(total=Count('id'))
+        .order_by('-total')[:5]
+    )
+
+    return render(
+        request,
+        'estoque/dashboard.html',
+        {
+            'form': PeriodoForm(request.GET),
+            'kpis': kpis,
+            'por_mes': por_mes,
+            'ranking_produtos': ranking_produtos,
+        },
     )

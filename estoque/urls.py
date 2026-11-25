@@ -118,4 +118,10 @@ urlpatterns = [
         views.estoque,
         name='estoque'
     ),
+
+    path(
+        'dashboard/',
+        views.dashboard,
+        name='dashboard'
+    ),
 ]

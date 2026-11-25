@@ -162,3 +162,26 @@ class MovimentacaoForm(forms.ModelForm):
                 )
 
         return cleaned_data
+
+class PeriodoForm(forms.Form):
+    inicio = forms.DateField(
+        required=False,
+        label='Data inicial',
+        widget=forms.DateInput(attrs={'type': 'date'}),
+    )
+    fim = forms.DateField(
+        required=False,
+        label='Data final',
+        widget=forms.DateInput(attrs={'type': 'date'}),
+    )
+
+def filtrar_periodo(request, qs, campo_data='data'):
+    form = PeriodoForm(request.GET)
+    if form.is_valid():
+        inicio = form.cleaned_data.get('inicio')
+        fim = form.cleaned_data.get('fim')
+        if inicio:
+            qs = qs.filter(**{f'{campo_data}__date__gte': inicio})
+        if fim:
+            qs = qs.filter(**{f'{campo_data}__date__lte': fim})
+    return qs
