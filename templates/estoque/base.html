@@ -173,6 +173,12 @@
 
       <a href="/admin/"> Admin </a>
 
+      {% if user.perfil %}
+      <span style="color: #ccc; margin-right: 20px">
+        {{ user.perfil.organizacao.nome }}
+      </span>
+      {% endif %}
+
       <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit" class="btn btn-danger">Sair</button>
