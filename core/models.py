@@ -11,13 +11,9 @@ class Organizacao(models.Model):
 
 
 class DaOrganizacao(models.Model):
-    # null=True é temporário: será removido depois da migração de dados,
-    # para não perder os registros que já existem.
     organizacao = models.ForeignKey(
         'core.Organizacao',
-        on_delete=models.PROTECT,
-        null=True,
-        blank=True
+        on_delete=models.PROTECT
     )
 
     class Meta:

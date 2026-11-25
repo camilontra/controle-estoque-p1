@@ -1,18 +1,26 @@
 from django.test import TestCase
 from django.urls import reverse
 
+from core.models import Organizacao
+
 from .models import Fornecedor, Produto
 
 
 class ProdutoTestCase(TestCase):
 
     def test_criacao_produto(self):
+        organizacao = Organizacao.objects.create(
+            nome='Organização Teste'
+        )
+
         fornecedor = Fornecedor.objects.create(
+            organizacao=organizacao,
             nome='Fornecedor Teste',
             email='teste@email.com'
         )
 
         produto = Produto.objects.create(
+            organizacao=organizacao,
             nome='Produto Teste',
             codigo='TESTE001',
             preco=10.00,
